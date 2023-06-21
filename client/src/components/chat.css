@@ -1,7 +1,8 @@
 .chat {
   display: flex;
   flex-direction: column;
-  flex: 0.65;
+  /* flex: 0.65; */
+  width: 100%;
 }
 
 .chat-header {
@@ -36,14 +37,14 @@
   margin-bottom: 30px;
   padding: 10px;
   width: fit-content;
-  background-color: white;
+  background-color: #a9e7a9;
   border-radius: 10px;
   font-size: 16px;
 }
 
 .chat-receiver {
   margin-left: auto;
-  background-color: #dcf8c6;
+  background-color: white;
 }
 
 .chat-timestamp {
@@ -54,15 +55,15 @@
 .chat-name {
   position: absolute;
   top: -15px;
-  font-weight: 800;
-  font-size: xx-small;
+  font-weight: 700;
+  font-size: 0.7em;
 }
 
 .chat-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 62px;
+  height: 3.5em;
   border-top: 1px solid lightgray;
 }
 
@@ -73,9 +74,9 @@
 
 .chat-footer > form > input {
   flex: 1;
-  border-radius: 30px;
-  padding: 10px;
+  padding: 0.8em 1.3em;
   border: none;
+  border-radius: 2em;
 }
 
 .chat-footer > form > button {

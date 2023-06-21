@@ -37,7 +37,7 @@
   background-color: lightgray;
 }
 
-button, a {
+.login-page button, .login-page a {
   padding: 0.8em;
   border: none;
   border-radius: 0.5em;
@@ -53,7 +53,7 @@ button:hover, a:hover {
   cursor: pointer;
 }
 
-.button-primary {
+.login-card .button-primary {
   background-color: rgb(55, 134, 246);
   color: white;
 }

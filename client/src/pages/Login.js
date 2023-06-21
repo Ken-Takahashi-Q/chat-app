@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './login.css';
 import axios from '../axios';
 
-const Login = () => {
+const Login = ({ onLogin }) => {
   const navigate = useNavigate();
   const [form, setForm] = useState({
     email: "",
@@ -18,9 +18,9 @@ const Login = () => {
   const handleLogin = async () => {
     try {
       const res = await axios.post('/login', form);
-      setTimeout(() => {
-        navigate('/');
-      }, 2000);
+      const { token, username } = res.data;
+      onLogin(token, username);
+      navigate('/');
     } catch (error) {
       console.log(error);
     }
@@ -33,6 +33,7 @@ const Login = () => {
         <input type="text" name="email" placeholder="Email" value={email} onChange={handleInputChange} />
         <input type="password" name="password" placeholder="Password" value={password} onChange={handleInputChange} />
         <span className="divider"></span>
+
         <button onClick={handleLogin} className="button-primary">Login</button>
         <a href="/register">Register</a>
       </div>

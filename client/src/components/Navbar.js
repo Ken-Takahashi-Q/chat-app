@@ -1,7 +1,7 @@
 import React from 'react'
 import './navbar.css'
 
-const Navbar = () => {
+const Navbar = ({ onLogout }) => {
   return (
     <div className="navbar">
       <ul>
@@ -9,7 +9,7 @@ const Navbar = () => {
           <a href="/">Home</a>
         </li>
         <li>
-          <a href="/login">Login</a>
+          <button onClick={onLogout}>Logout</button>
         </li>
       </ul>
     </div>

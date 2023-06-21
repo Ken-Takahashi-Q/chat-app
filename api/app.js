@@ -5,6 +5,7 @@ const mongoose = require('mongoose')
 const express = require('express');
 const Users = require('./model/users');
 const Messages = require('./model/messages');
+const ChatRoom = require('./model/chatRoom');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const auth = require('./middleware/auth');
@@ -28,16 +29,6 @@ app.use((req, res, next) => {
 });
 
 // DB config
-const connection_url = 'mongodb+srv://ken:1234@cluster0.grmo3w2.mongodb.net/?retryWrites=true&w=majority'
-mongoose.connect(connection_url, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-}).then(() => {
-  console.log('Connected to MongoDB');
-}).catch((error) => {
-  console.log('Error connecting to MongoDB:', error);
-});
-
 const db = mongoose.connection
 
 db.once('open', () => {
@@ -47,13 +38,13 @@ db.once('open', () => {
   const changeStream = msgCollection.watch();
 
   changeStream.on('change', (change) => {
-    console.log("Changed", change)
+    // console.log("Changed", change)
 
     if (change.operationType === 'insert') {
       const messageDetails = change.fullDocument;
       pusher.trigger('messages', 'inserted',
         {
-          name: messageDetails.user,
+          name: messageDetails.sender,
           message: messageDetails.message,
           timestamp: messageDetails.timestamp,
           received: messageDetails.received,
@@ -134,12 +125,22 @@ app.post('/login', async (req, res) => {
   }
 })
 
+// Logout
+app.post('/logout', (req, res) => {
+  try {
+    res.clearCookie('token');
+    res.status(200).json({ message: 'Logout successful' });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
 // Chat
 app.post('/messages/new', async (req, res) => {
   try {
-    const dbMessage = req.body;
-    const message = await Messages.create(dbMessage);
-    res.status(201).send(message);
+    const createdMessage = await Messages.create(req.body);
+    res.status(201).send(createdMessage);
   } catch (error) {
     res.status(500).send(error);
   }
@@ -154,6 +155,48 @@ app.get('/messages/sync', async (req, res) => {
     res.status(500).send(error);
   }
 });
+
+// Get users
+app.get('/users', async (req, res) => {
+  try {
+    const users = await Users.find();
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
+// Chat room
+app.get('/chatrooms', async (req, res) => {
+  try {
+    const chatrooms = await ChatRoom.find();
+    res.status(200).json(chatrooms);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
+app.post('/chatrooms', async (req, res) => {
+  try {
+    const { creater, member } = req.body;
+
+    const chatroomNumber = new Date().getTime();
+    const chatroom = new ChatRoom({
+      chatroom: chatroomNumber,
+      members: [creater, member],
+    });
+    
+    await chatroom.save();
+    
+    console.log('Saved Chatroom:', chatroom);
+
+    res.status(201).send(chatroom);
+  } catch (error) {
+    console.log('Error:', error);
+    res.status(500).send(error);
+  }
+});
+
 
 // Test
 app.get('/', (auth, (req, res) => {

@@ -1,20 +1,31 @@
 .sidebar {
   display: flex;
+  width: 100%;
+}
+
+.sidebar-left {
+  display: flex;
   flex-direction: column;
   flex: 0.35;
 }
 
 .sidebar-header {
   display: flex;
-  justify-content: space-between;
+  gap: 1em;
   padding: 20px;
   border-right: 1px solid lightgray;
+}
+
+.sidebar-header img {
+  width: 40px;
+  height: 40px;
+  border-radius: 40px;
+  background-color: gray;
 }
 
 .sidebar-header-right {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   min-width: 10vw;
 }
 
@@ -27,32 +38,69 @@
   display: flex;
   align-items: center;
   background-color: #f6f6f6;
-  height: 39px;
-  padding: 10px;
+  gap: 0.5em;
+  padding: 0.5em;
+  height: 2.8em;
 }
 
 .sidebar-search-container {
   display: flex;
   align-items: center;
-  background-color: white;
+  padding: 0 0.5em;
   width: 100%;
-  height: 35px;
-  border-radius: 20px;
+  height: 2em;
+  background-color: white;
+  border-radius: 0.5em;
 }
 
 .sidebar-search-container > .MuiSvgIcon-root {
-  padding: 10px;
   color: gray;
 }
 
 .sidebar-search-container > input {
-  margin-left: 10px;
+  margin: 0 0.7em;
+  width: 80%;
   border: none;
   outline-width: 0;
+}
+
+/* sidebar.css */
+.sidebar-search {
+  position: relative;
+}
+
+.sidebar-search .search-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-left: 0.5em;
+  width: 100%;
+  background-color: #fff;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  border-radius: 0.5em;
+  z-index: 1;
+}
+
+.sidebar-search .dropdown-item {
+  padding: 0.7em;
+  border-radius: 0.5em;
+  cursor: pointer;
+}
+
+.sidebar-search .dropdown-item:hover {
+  background-color: #ededed;
 }
 
 .sidebar-chats {
   flex: 1;
   background-color: white;
-  overflow: scroll; 
+  overflow-y: scroll; 
+}
+
+.button-primary {
+  padding: 0.5em;
+  background-color: rgb(55, 134, 246);
+  color: white;
+  border: 1px solid gray;
+  border-radius: 0.5em;
 }
