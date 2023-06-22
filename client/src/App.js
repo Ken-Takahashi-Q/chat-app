@@ -72,7 +72,7 @@ function App() {
     <div className="app">
       <Navbar onLogout={handleLogout} />
       <div className="app-body">
-        <Sidebar username={username} />
+        <Sidebar username={username} messages={messages} />
         <Chat username={username} messages={messages} />
       </div>
     </div>

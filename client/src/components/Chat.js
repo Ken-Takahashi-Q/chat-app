@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react'
+import { useSelector } from 'react-redux';
 import './chat.css'
 import { Avatar, IconButton } from '@mui/material'
 import { DonutLarge, MoreVert, InsertEmoticon, MicOutlined } from '@mui/icons-material'
 import ChatIcon from '@mui/icons-material/Chat';
 import axios from '../axios';
+// import { selectChatRoom } from '../Redux/actions';
 
-const Chat = ({ username }) => {
+const Chat = ({ username, storedMessages, opponent, chatRoomId }) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [chatRooms, setChatRooms] = useState([]);
+  // const selectedChatRoom = useSelector((state) => state.selectedChatRoom);
 
   useEffect(() => {
     axios.get('/chatrooms').then((response) => {
@@ -37,12 +40,12 @@ const Chat = ({ username }) => {
     const minutes = String(now.getMinutes()).padStart(2, '0');
     return `${hours}:${minutes}`;
   };
-console.log(chatRooms)
+
   const sendMessage = async (e) => {
     e.preventDefault();
 
     await axios.post('/messages/new', {
-      chatroomId: chatRooms.chatroom,
+      chatroomId: chatRoomId,
       sender: username,
       message: input,
       timestamp: getCurrentTime(),
@@ -58,7 +61,7 @@ console.log(chatRooms)
         <Avatar />
 
         <div className="chat-header-info">
-          <h3>{chatRooms.member}</h3>
+          <h3>{opponent}</h3>
         </div>
 
         <div className="chat-header-right">
@@ -76,8 +79,8 @@ console.log(chatRooms)
 
       <div className="chat-body">
         {messages.map((message) => (
-          <p className={`chat-message ${message.name === username ? "" : "chat-receiver"}`}>
-            <span className="chat-name">{message.name}</span>
+          <p className={`chat-message ${message.sender === username ? "" : "chat-receiver"}`}>
+            <span className="chat-name">{message.name || message.sender}</span>
             {message.message}
             <span className="chat-timestamp">{message.timestamp}</span>
           </p>

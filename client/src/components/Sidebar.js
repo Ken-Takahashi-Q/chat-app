@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+// import { setSelectedChatRoom } from '../Redux/actions';
 import './sidebar.css';
 import { SearchOutlined } from '@mui/icons-material';
 import { Avatar, IconButton } from '@mui/material';
@@ -6,16 +8,23 @@ import ChatIcon from '@mui/icons-material/Chat';
 import SidebarChat from './SidebarChat';
 import axios from '../axios';
 import Chat from './Chat';
+// import { selectChatRoom } from '../Redux/actions';
+import Pusher from 'pusher-js';
 
 const Sidebar = ({ username }) => {
+  // const dispatch = useDispatch();
+  // const userChatRooms = useSelector((state) => state.chatRooms);
+
   const [searchValue, setSearchValue] = useState("");
   const [options, setOptions] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const searchInputRef = useRef(null);
   const [filteredOptions, setFilteredOptions] = useState(options);
   const [chatRooms, setChatRooms] = useState([]);
+  const [opponent, setOpponent] = useState();
   const [selectedChatRoom, setSelectedChatRoom] = useState();
   const [showChat, setShowChat] = useState(false);
+  const [messages, setMessages] = useState([]);
 
   useEffect(() => {
     axios.get('/chatrooms').then((response) => {
@@ -23,6 +32,23 @@ const Sidebar = ({ username }) => {
     }).catch((error) => {
       console.log('Error fetching chat rooms:', error);
     });
+  }, []);
+
+  useEffect(() => {
+    const pusher = new Pusher('70275e031e7ebbf7f513', {
+      cluster: 'ap1'
+    });
+
+    const channel = pusher.subscribe('messages');
+    channel.bind('inserted', (newMessage) => {
+      console.log(newMessage)
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
+    });
+
+    return () => {
+      channel.unbind_all();
+      channel.unsubscribe();
+    };
   }, []);
 
   const userChatRooms = chatRooms.filter(
@@ -75,15 +101,19 @@ const Sidebar = ({ username }) => {
         const newChatRoom = response.data;
   
         console.log('New chat room created:', newChatRoom);
+        setChatRooms((prevChatRooms) => [...prevChatRooms, newChatRoom]);
       } catch (error) {
         console.error('Error creating chat room:', error);
       }
     }
-  }
+  };
 
   const handleChatRoomClick = (room) => {
-    setSelectedChatRoom(room);
-    setShowChat(true) 
+    // dispatch(selectChatRoom(room));
+    // dispatch(setSelectedChatRoom(room));
+    setSelectedChatRoom(room.chatroom)
+    setShowChat(true);
+    setOpponent(room.member)
   };
 
   return (
@@ -127,13 +157,15 @@ const Sidebar = ({ username }) => {
           {userChatRooms.map((room) => (
             <SidebarChat
               key={room.chatroom}
-              member={room.member}
-              onClick={(room) => handleChatRoomClick(room)}
+              member={room.member !== username ? room.member : room.creater}
+              onClick={() => handleChatRoomClick(room)}
             />
           ))}
         </div>
       </div>
-      {/* {showChat && <Chat username={selectedChatRoom} />}   */}
+      {showChat && selectedChatRoom && (
+        <Chat username={username} storedMessages={messages} opponent={opponent} chatRoomId={selectedChatRoom} />
+      )}
     </div>
   );
 };

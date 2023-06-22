@@ -101,6 +101,6 @@
   padding: 0.5em;
   background-color: rgb(55, 134, 246);
   color: white;
-  border: 1px solid gray;
+  border: none;
   border-radius: 0.5em;
 }

@@ -102,28 +102,35 @@ app.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
     if (!(email && password)) {
-      res.status(400).send("All input is required");
+      return res.status(400).send("All input is required");
     }
 
     const user = await Users.findOne({ email });
 
-    if (user && (await bcrypt.compare(password, user.password))) {
-      const token = jwt.sign(
-        { user_id: user._id, email },
-        process.env.TOKEN_KEY,
-        { expiresIn: "2h" }
-      )
-
-      user.token = token;
-
-      res.status(200).json(user);
+    if (!user) {
+      return res.status(400).send("Invalid email");
     }
 
-    res.status(400).send("Invalid password");
+    const passwordMatch = await bcrypt.compare(password, user.password);
+
+    if (!passwordMatch) {
+      return res.status(400).send("Invalid password");
+    }
+
+    const token = jwt.sign(
+      { user_id: user._id, email },
+      process.env.TOKEN_KEY,
+      { expiresIn: "2h" }
+    );
+
+    user.token = token;
+
+    res.status(200).json(user);
   } catch (error) {
-    console.log(error)
+    console.log(error);
+    res.status(500).send("Internal server error");
   }
-})
+});
 
 // Logout
 app.post('/logout', (req, res) => {
@@ -183,13 +190,11 @@ app.post('/chatrooms', async (req, res) => {
     const chatroomNumber = new Date().getTime();
     const chatroom = new ChatRoom({
       chatroom: chatroomNumber,
-      members: [creater, member],
+      creater: creater,
+      member: member,
     });
     
     await chatroom.save();
-    
-    console.log('Saved Chatroom:', chatroom);
-
     res.status(201).send(chatroom);
   } catch (error) {
     console.log('Error:', error);
