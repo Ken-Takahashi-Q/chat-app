@@ -1,13 +1,14 @@
 .register {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   height: 100vh;
   background-color: lightgray;
 }
 
 .register-page {
+  position: absolute;
+  top: 25%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -44,25 +45,20 @@
   background-color: lightgray;
 }
 
-.register button, .register a {
+.register .button-primary {
   padding: 0.8em;
   border: none;
   border-radius: 0.5em;
-  background: #aeaeae;
-  color: black;
   text-align: center;
   font-size: 1em;
   font-weight:  600;
-}
-
-button:hover, a:hover {
-  filter: brightness(0.95);
-  cursor: pointer;
-}
-
-.button-primary {
   background-color: rgb(55, 134, 246);
   color: white;
+}
+
+.button-primary:hover {
+  filter: brightness(0.95);
+  cursor: pointer;
 }
 
 .notification {

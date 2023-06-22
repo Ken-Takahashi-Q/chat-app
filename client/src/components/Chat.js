@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux';
+// import { useSelector } from 'react-redux';
 import './chat.css'
 import { Avatar, IconButton } from '@mui/material'
 import { DonutLarge, MoreVert, InsertEmoticon, MicOutlined } from '@mui/icons-material'
@@ -7,10 +7,11 @@ import ChatIcon from '@mui/icons-material/Chat';
 import axios from '../axios';
 // import { selectChatRoom } from '../Redux/actions';
 
-const Chat = ({ username, storedMessages, opponent, chatRoomId }) => {
+const Chat = ({ username, opponent, chatRoomId }) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [chatRooms, setChatRooms] = useState([]);
+  const [isSync, setIsSync] = useState(false);
   // const selectedChatRoom = useSelector((state) => state.selectedChatRoom);
 
   useEffect(() => {
@@ -19,20 +20,24 @@ const Chat = ({ username, storedMessages, opponent, chatRoomId }) => {
     }).catch((error) => {
       console.log('Error fetching chat rooms:', error);
     });
-  }, []);
+  }, [isSync]);
 
   useEffect(() => {
     const fetchMessages = async () => {
       try {
         const response = await axios.get(`/messages/sync`);
-        setMessages(response.data);
+        const filteredMessages = response.data.filter(
+          (message) => message.chatroomId === chatRoomId
+        );
+        setMessages(filteredMessages);
+        setIsSync(!isSync);
       } catch (error) {
         console.log(error);
       }
     };
 
     fetchMessages();
-  }, [chatRooms]);
+  }, [chatRooms, chatRoomId]);
 
   const getCurrentTime = () => {
     const now = new Date();
@@ -53,6 +58,7 @@ const Chat = ({ username, storedMessages, opponent, chatRoomId }) => {
     });
 
     setInput("");
+    setIsSync(!isSync)
   }
 
   return (

@@ -11,7 +11,7 @@ import Chat from './Chat';
 // import { selectChatRoom } from '../Redux/actions';
 import Pusher from 'pusher-js';
 
-const Sidebar = ({ username }) => {
+const Sidebar = ({ username, storedMessages }) => {
   // const dispatch = useDispatch();
   // const userChatRooms = useSelector((state) => state.chatRooms);
 
@@ -133,7 +133,7 @@ const Sidebar = ({ username }) => {
               onChange={handleSearchChange}
               onFocus={handleDropdownToggle}
               onBlur={() => setTimeout(() => setIsDropdownOpen(false), 200)}
-              placeholder="Search or start new chat"
+              placeholder="Start new chat"
               type="text"
             />
           </div>
@@ -159,6 +159,8 @@ const Sidebar = ({ username }) => {
               key={room.chatroom}
               member={room.member !== username ? room.member : room.creater}
               onClick={() => handleChatRoomClick(room)}
+              storedMessages={storedMessages}
+              // chatRooms={chatRooms}
             />
           ))}
         </div>

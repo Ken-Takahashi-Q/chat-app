@@ -14,6 +14,7 @@ const Register = () => {
   });
   const [notify, setNotify] = useState(false);
   const [notifyMessage, setNotifyMessage] = useState("");
+  const [success, setSuccess] = useState(false);
 
   const { username, email, password } = form;
 
@@ -24,7 +25,8 @@ const Register = () => {
   const handleRegister = async () => {
     try {
       const res = await axios.post('/register', form);
-      setNotifyMessage(res.data.message + ". Redirecting to Login")
+      setSuccess(true);
+      setNotifyMessage("Register Successful. Redirecting to Login")
       setNotify(true);
       setTimeout(() => {
         setNotify(false);
@@ -32,7 +34,8 @@ const Register = () => {
       }, 2000);
     } catch (error) {
       console.log(error);
-      setNotifyMessage(error.message)
+      setSuccess(false);
+      setNotifyMessage(error.response.data)
       setNotify(true);
       setTimeout(() => {
         setNotify(false);
@@ -42,7 +45,7 @@ const Register = () => {
 
   return (
     <div className="register">
-      {/* <Navbar/> */}
+      <Navbar/>
       <div className="register-page">
         <div className="register-card">
           <h1>Register</h1>
@@ -73,8 +76,8 @@ const Register = () => {
           </button>
         </div>
 
-        <div className={`notification ${!notify && "hidden"} ${notifyMessage === "User registered successfully" ? "success" : "fail"}`}>
-          {notifyMessage === "User registered successfully" ? <CheckCircle className="icon" /> : <Cancel className="icon" />}
+        <div className={`notification ${!notify && "hidden"} ${success ? "success" : "fail"}`}>
+          {success ? <CheckCircle className="icon" /> : <Cancel className="icon" />}
           {notifyMessage || "Error"}
         </div>
       </div>

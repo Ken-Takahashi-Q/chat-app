@@ -70,10 +70,10 @@ function App() {
 
   return (
     <div className="app">
-      <Navbar onLogout={handleLogout} />
+      <Navbar onLogout={handleLogout} isLoggedIn={isLoggedIn} />
       <div className="app-body">
-        <Sidebar username={username} messages={messages} />
-        <Chat username={username} messages={messages} />
+        <Sidebar username={username} storedMessages={messages} />
+        {/* <Chat username={username} messages={messages} /> */}
       </div>
     </div>
   );

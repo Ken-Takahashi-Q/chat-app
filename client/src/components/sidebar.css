@@ -40,7 +40,6 @@
   background-color: #f6f6f6;
   gap: 0.5em;
   padding: 0.5em;
-  height: 2.8em;
 }
 
 .sidebar-search-container {
@@ -97,7 +96,7 @@
   overflow-y: scroll; 
 }
 
-.button-primary {
+.sidebar .button-primary {
   padding: 0.5em;
   background-color: rgb(55, 134, 246);
   color: white;
